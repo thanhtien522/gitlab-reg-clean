@@ -40,7 +40,7 @@ function get_current_repos {
     debug "Retrieving repositories from registry..."
     TOKEN=$(curl -s --user ${AUTH} "${GITLAB}/jwt/auth?client_id=docker&offline_token=true&service=container_registry&scope=registry:catalog:*" | jq -r '.token')
     CATALOG_AUTH="Authorization: Bearer ${TOKEN}"
-    curl -s -H ${CATALOG_AUTH} -H "${HEADER}" ${REGISTRY}/v2/_catalog | jq -r '.repositories | .[]' | xargs
+    curl -s -H "${CATALOG_AUTH}" -H "${HEADER}" ${REGISTRY}/v2/_catalog | jq -r '.repositories | .[]' | xargs
     debug
 }
 
@@ -51,7 +51,7 @@ function get_current_tags {
 
 function get_current_manifest {
     for tag in $(get_current_tags $1); do
-        MF=$(curl -sI -H ${PROJECT_AUTH} -H "${HEADER}" ${REGISTRY}/v2/$1/manifests/$tag | \
+        MF=$(curl -sI -H "${PROJECT_AUTH}" -H "${HEADER}" ${REGISTRY}/v2/$1/manifests/$tag | \
         grep 'Docker-Content-Digest' | cut -d ':' -f 3)
         
         debug "  - Found manifest for $1:${tag}: ${MF}"
@@ -72,7 +72,7 @@ function remove_unused_manifests {
         
         debug -n "    - sha256:${mf} - unused - "
         if [ $DEBUG -eq 0 ]; then
-            curl -sI -X DELETE -H ${PROJECT_AUTH} -H "${HEADER}" "${REGISTRY}/v2/$1/manifests/sha256:${mf}" | \
+            curl -sI -X DELETE -H "${PROJECT_AUTH}" -H "${HEADER}" "${REGISTRY}/v2/$1/manifests/sha256:${mf}" | \
             grep -qE "HTTP/[12.]+ (202|404) " && debug "deleted" || debug "FAILED to delete"
         else
             debug "NOOP"
