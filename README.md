@@ -17,10 +17,11 @@ AWS_ACCESS_KEY_ID=myaccesskey
 AWS_SECRET_ACCESS_KEY=mysecretaccesskey
 AWS_DEFAULT_REGION=eu-west-1
 
-AUTH=registryuser:pass
-BUCKET=io.luzifer.docker-registry
-REGISTRY=https://registry.luzifer.io
+AUTH=gitlabuser:gitlab-access-token
+BUCKET=example-docker-registry
+REGISTRY=https://registry.gitlab.example.com
+GITLAB=https://gitlab.example.com
 
 ## Execute script
-$ docker run --rm -ti --env-file=env quay.io/luzifer/reg-clean
+$ docker run --rm -ti --env-file=env tiennt/gitlab-reg-clean
 ```
