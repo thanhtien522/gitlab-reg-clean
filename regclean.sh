@@ -52,7 +52,7 @@ function get_current_tags {
 function get_current_manifest {
     for tag in $(get_current_tags $1); do
         MF=$(curl -sI -H "${PROJECT_AUTH}" -H "${HEADER}" ${REGISTRY}/v2/$1/manifests/$tag | \
-        grep 'Docker-Content-Digest' | cut -d ':' -f 3)
+        grep 'docker-content-digest' | cut -d ':' -f 3)
         
         debug "  - Found manifest for $1:${tag}: ${MF}"
         echo "${MF}"
@@ -82,7 +82,7 @@ function remove_unused_manifests {
 
 for repo in $(get_current_repos); do
     debug "Working on repository ${repo}..."
-    PRJ_TOKEN=$(curl -s --user ${AUTH} "${GITLAB}/jwt/auth?client_id=docker&offline_token=true&service=container_registry&scope=registry:catalog:*" | jq -r '.token')
+    PRJ_TOKEN=$(curl -s --user ${AUTH} "${GITLAB}/jwt/auth?client_id=docker&offline_token=true&service=container_registry&scope=repository:${repo}:*" | jq -r '.token')
     PROJECT_AUTH="Authorization: Bearer ${PRJ_TOKEN}"
     remove_unused_manifests ${repo}
     debug
