@@ -24,4 +24,7 @@ GITLAB=https://gitlab.example.com
 
 ## Execute script
 $ docker run --rm -ti --env-file=env tiennt/gitlab-reg-clean
+
+## Run garbage collector
+$ gitlab-ctl registry-garbage-collect
 ```
